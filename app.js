@@ -3,7 +3,7 @@
 ////////////
 /////////////////////////////////Steam API
 const SteamAPI = require('steamapi');
-const steam = new SteamAPI('108C82A28B108C4AAE5DAA06EA29AFF6');
+const steam = new SteamAPI('');
 //////////////////////////////////////////////
 const { prefix, token } = require('./config.json');
 const fs = require('fs'); //komendy w folderze
@@ -16,10 +16,10 @@ client.login(token)
 
 //MySql Connection
 var connection = mysql.createConnection({
-    host: "5.230.23.238",
-    user: "domcio",
-    password: "domciomistrz",
-    database: "domcio"
+    host: "",
+    user: "",
+    password: "",
+    database: ""
 });
 
 connection.connect(function (err) {
@@ -36,12 +36,12 @@ client.once('ready', () => {
         
         connection.query(Skaner, function (err, wiersze) {
             if (err) throw err;
-            for (var wiersz of wiersze) { // zmiana for-in na for-of, ¿eby mieæ wiersz w zmiennej
+            for (var wiersz of wiersze) { // zmiana for-in na for-of, Â¿eby mieÃ¦ wiersz w zmiennej
                 //console.log(wiersz)
                 const steamId = wiersz.Steam; // zapakowanie id do zmiennej
                // console.log(steamId)
 
-                steam.getUserBans(steamId).then(playerBans => { // zmiana wiersze[i] na steamId i usuniêcie zbêdnych stringów; zamiana id na playerBans
+                steam.getUserBans(steamId).then(playerBans => { // zmiana wiersze[i] na steamId i usuniÃªcie zbÃªdnych stringÃ³w; zamiana id na playerBans
                    //console.log(playerBans)
                     
                     if (playerBans.daysSinceLastBan == 0 && (playerBans.vacBanned == true || playerBans.gameBans >= 1)) {
