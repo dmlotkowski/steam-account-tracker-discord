@@ -1,10 +1,5 @@
-////////////
-//SPY BOT //
-////////////
-/////////////////////////////////Steam API
 const SteamAPI = require('steamapi');
 const steam = new SteamAPI('');
-//////////////////////////////////////////////
 const { prefix, token } = require('./config.json');
 const fs = require('fs'); //komendy w folderze
 const Discord = require('discord.js')
@@ -29,26 +24,24 @@ connection.connect(function (err) {
 
 client.once('ready', () => {
     console.log('Ready!');
-    //OPERACJA SKANOWANIA KONT
     var Skaner = 'SELECT Steam FROM Konta WHERE ow = false';
 
     function fetchSteam() {
         
         connection.query(Skaner, function (err, wiersze) {
             if (err) throw err;
-            for (var wiersz of wiersze) { // zmiana for-in na for-of, ¿eby mieæ wiersz w zmiennej
+            for (var wiersz of wiersze) {
                 //console.log(wiersz)
-                const steamId = wiersz.Steam; // zapakowanie id do zmiennej
+                const steamId = wiersz.Steam;
                // console.log(steamId)
 
-                steam.getUserBans(steamId).then(playerBans => { // zmiana wiersze[i] na steamId i usuniêcie zbêdnych stringów; zamiana id na playerBans
+                steam.getUserBans(steamId).then(playerBans => {
                    //console.log(playerBans)
                     
                     if (playerBans.daysSinceLastBan == 0 && (playerBans.vacBanned == true || playerBans.gameBans >= 1)) {
 
                         console.log('Konto zbanowane! UPDATE from table Konta and added to Banned!');
                         connection.query('INSERT INTO Banned (Id, Steam, ban) VALUES (NULL, "' + steamId + '", true)');  
-                        //connection.query('DELETE FROM Konta WHERE Steam = ' + steamId + '');
                         connection.query('UPDATE Konta SET ow = true WHERE Steam = ' + steamId + ' ')
                         steam.getUserSummary(steamId).then(summary => {
 
@@ -74,16 +67,13 @@ client.once('ready', () => {
     }
 
     fetchSteam();
-    setInterval(fetchSteam, 5500); // refresh co 5 sekund
+    setInterval(fetchSteam, 5500);
 
 });
 
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')); //komendy w folderze
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
-
-    // set a new item in the Collection
-    // with the key as the command name and the value as the exported module
     client.commands.set(command.name, command);
 }
 
